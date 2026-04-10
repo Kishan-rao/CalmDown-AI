@@ -78,7 +78,7 @@ export function analyzeText(text: string) {
     response = "Your words suggest that tension is building. The assistant should acknowledge that clearly, offer practical coping options, and keep the next step simple rather than overwhelming.";
     recommendations = recommendationLibrary.medium;
   } else if (positiveHits > 0) {
-    emotion = "Stable";
+    emotion = "Happy";
     risk = "Low";
     support = "Mood maintenance";
     response = "You appear relatively balanced right now. The best support is to reinforce routines that keep your energy and focus steady.";

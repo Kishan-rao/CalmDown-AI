@@ -94,6 +94,11 @@ function App() {
       finalSentimentLabel = 'Positive';
       finalRisk = 'Low';
       finalSupportMode = 'Mood maintenance';
+    } else if (localResult.sentiment >= 75 && finalStress <= 30) {
+      finalMood = 'Happy';
+      finalSentimentLabel = 'Positive';
+      finalRisk = 'Low';
+      finalSupportMode = 'Mood maintenance';
     } else if (positiveFaceDetected && finalStress <= 30) {
       finalMood = finalMood === 'Neutral' || finalMood === 'Reflective' ? 'Stable' : finalMood;
       finalSentimentScore = Math.max(localResult.sentiment, 60);
