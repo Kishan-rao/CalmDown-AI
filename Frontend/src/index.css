@@ -231,6 +231,7 @@ h4 {
 
 .input-panel {
   grid-column: span 7;
+  align-self: start;
 }
 
 .webcam-panel {

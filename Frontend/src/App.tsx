@@ -9,6 +9,8 @@ import { AnalysisDashboard } from './components/AnalysisDashboard';
 import { RecommendationGrid } from './components/RecommendationGrid';
 import { SupportResponse } from './components/SupportResponse';
 import { BreathingPanel } from './components/BreathingPanel';
+import { EmotionIntensitySection } from './components/EmotionIntensitySection';
+import type { EmotionMetric } from './components/EmotionBar';
 
 import { useWebcam } from './hooks/useWebcam';
 import { useMoodHistory } from './hooks/useMoodHistory';
@@ -35,7 +37,8 @@ function App() {
   const [supportMode, setSupportMode] = useState('Gentle check-in');
   const [supportText, setSupportText] = useState('Share a check-in above to receive a supportive response, risk summary, and calming next steps.');
   const [recommendations, setRecommendations] = useState(recommendationLibrary.low);
-  const [spectrumEntries, setSpectrumEntries] = useState<{label: string, intensity: number, meta: string}[]>([]);
+  const [emotionMetrics, setEmotionMetrics] = useState<EmotionMetric[]>([]);
+  const [isAnalyzed, setIsAnalyzed] = useState(false);
 
   const handleAnalyze = async () => {
     // Fallback/base local heuristic
@@ -121,12 +124,17 @@ function App() {
     setSupportText(finalSupportText);
     setRecommendations(finalRecommendations);
 
-    // Build the Emotion Spectrum intensity bars
-    setSpectrumEntries([
-      { label: "Sentiment Depth", intensity: finalSentimentScore, meta: "Intensity of positive/negative tone keywords." },
-      { label: "Distress Index", intensity: finalStress, meta: "Combined physiological and semantic tension." },
-      { label: "Mental Clarity", intensity: Math.max(0, 100 - finalStress + 10), meta: "Estimated baseline stability and focus." }
+    // Build the Emotion Intensity metrics
+    setEmotionMetrics([
+      { label: "Sentiment Depth", value: finalSentimentScore, description: "Intensity of positive/negative tone keywords." },
+      { label: "Distress Index", value: finalStress, description: "Combined physiological and semantic tension." },
+      { label: "Mental Clarity", value: Math.max(0, 100 - finalStress + 10), description: "Estimated baseline stability and focus." },
+      { label: "Physiological Tension", value: clamp(finalStress * 1.1, 0, 100), description: "Somatic indicators derived from facial cues and tone." },
+      { label: "Cognitive Load", value: clamp((inputText.length / 500) * 100 + (finalStress * 0.2), 0, 100), description: "Mental energy dedicated to processing current stressors." },
+      { label: "Emotional Resilience", value: clamp(100 - (finalStress * 0.8) + (finalSentimentScore * 0.2), 0, 100), description: "Estimated capacity to recover from emotional pressure." },
+      { label: "Communication Clarity", value: clamp(100 - (finalStress * 0.4), 0, 100), description: "Cohesion and focus of the shared emotional check-in." }
     ]);
+    setIsAnalyzed(true);
 
     addMoodEntry(finalStress, finalMood, finalSentimentScore);
   };
@@ -149,29 +157,37 @@ function App() {
       />
 
       <main className="content-grid animate-in" style={{ animationDelay: '0.1s' }}>
-        <EmotionCheckIn
-          value={inputText}
-          onChange={setInputText}
-          onAnalyze={handleAnalyze}
-          onOpenWebcam={webcam.startCamera}
-          spectrumEntries={spectrumEntries}
-        />
+        <div className="main-left-col" style={{ gridColumn: 'span 7', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <EmotionCheckIn
+            value={inputText}
+            onChange={setInputText}
+            onAnalyze={handleAnalyze}
+            onOpenWebcam={webcam.startCamera}
+          />
 
-        <WebcamPanel
-          cameraStatus={webcam.cameraStatus}
-          cameraMessage={webcam.cameraMessage}
-          expressionOutput={webcam.expressionOutput}
-          expressionHint={webcam.expressionHint}
-          onStart={webcam.startCamera}
-          onStop={webcam.stopCamera}
-          onCapture={async () => {
-            await webcam.detectExpression();
-            if (inputText) handleAnalyze();
-          }}
-          videoRef={webcam.videoRef}
-          confidenceEntries={webcam.expressionConfidences}
-          dominantExpression={moodLabel}
-        />
+          <EmotionIntensitySection 
+            isAnalyzed={isAnalyzed}
+            metrics={emotionMetrics}
+          />
+        </div>
+
+        <div className="main-right-col" style={{ gridColumn: 'span 5' }}>
+          <WebcamPanel
+            cameraStatus={webcam.cameraStatus}
+            cameraMessage={webcam.cameraMessage}
+            expressionOutput={webcam.expressionOutput}
+            expressionHint={webcam.expressionHint}
+            onStart={webcam.startCamera}
+            onStop={webcam.stopCamera}
+            onCapture={async () => {
+              await webcam.detectExpression();
+              if (inputText) handleAnalyze();
+            }}
+            videoRef={webcam.videoRef}
+            confidenceEntries={webcam.expressionConfidences}
+            dominantExpression={moodLabel}
+          />
+        </div>
 
         <AnalysisDashboard
           dominantEmotion={moodLabel}
