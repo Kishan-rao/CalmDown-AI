@@ -23,7 +23,7 @@ export function HeroSection({
     <header className="hero">
       <nav className="topbar">
         <div className="brand-lockup">
-          <img src="/favicon.svg" alt="CalmDown AI logo" className="brand-logo" />
+          <img src="/new-logo.svg" alt="CalmDown AI logo" className="brand-logo" />
           <div>
             <p className="eyebrow">AI-powered emotional support</p>
             <h1>CalmDown AI</h1>
