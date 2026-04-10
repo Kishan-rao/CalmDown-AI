@@ -17,8 +17,11 @@ function fallbackResponse(): PipelineOutput {
   return {
     mood: "Neutral",
     stress_level: "Low",
-    stress_score: 1,
-    emotional_insight: "Unable to analyze input properly.",
+    stress_score: 10,
+    risk_indicator: "None",
+    recommended_support: "Self-care",
+    explanation: "Unable to analyze input properly.",
+    emotional_insight: "Input clarity was too low for a deep psychological assessment.",
     supportive_response: "I'm here for you. Could you try rephrasing that?",
     suggested_actions: [
       "Take a short break",
@@ -34,9 +37,12 @@ function fallbackResponse(): PipelineOutput {
 
 function crisisResponse(): PipelineOutput {
   return {
-    mood: "Stress",
+    mood: "Anxiety",
     stress_level: "High",
-    stress_score: 10,
+    stress_score: 100,
+    risk_indicator: "Elevated",
+    recommended_support: "Professional Guidance",
+    explanation: "User input contains clear indicators of immediate crisis or self-harm.",
     emotional_insight: "It sounds like you are going through an incredibly difficult time.",
     supportive_response: "Please know that you are not alone and there is support available right now. People care about you.",
     suggested_actions: [
@@ -78,53 +84,49 @@ async function generateWithRetry(
 
 // ─── System Prompt ────────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are an AI-powered emotional intelligence system designed to support mental well-being.
+const SYSTEM_PROMPT = `You are a high-precision AI-powered stress classification engine for the "SafeSpace AI" mental well-being platform.
 
-Your role is to analyze user input, detect emotional distress, assess stress levels, and provide personalized, safe, and actionable support.
+Your task is to analyze the user's message and determine the level of psychological stress expressed.
 
-Follow this strict structured reasoning pipeline:
+### Classification Rules:
 
-STEP 1: Emotion Detection
-- Choose from: Happy, Calm, Stress, Anxiety, Sadness, Anger, Burnout, Neutral, Mixed
+1. STRESS LEVEL
+   - Low / Medium / High
 
-STEP 2: Stress & Intensity Scoring
-- stress_level: Low / Medium / High
-- stress_score: 1–10
+2. STRESS SCORE (Precision: 0–100)
+   - 0–39  → Low stress
+   - 40–69 → Medium stress
+   - 70–100 → High stress
 
-STEP 3: Emotional Insight
-- 1–2 sentence psychological explanation
+3. RISK INDICATOR
+   - "None" → No immediate concern
+   - "Monitor" → Signs of increasing stress
+   - "Elevated" → Significant distress; recommend support
 
-STEP 4: Personalization
-- Tailor response based on intensity
+4. RECOMMENDED SUPPORT TYPE
+   - Self-care
+   - Mindfulness
+   - Social Support
+   - Professional Guidance
 
-STEP 5: Supportive Response
-- Calm, empathetic, non-judgmental
-
-STEP 6: Suggested Actions
-- 2–4 actionable steps
-
-STEP 7: Early Warning
-- If stress_score >= 7 → include warning
-- Else → null
-
-STEP 8: Safety
-- If stress_score >= 8 → encourage reaching out
-- No medical advice
-
-CRITICAL:
-- Return ONLY valid JSON
-- No extra text
+### Output Requirements:
+- Return ONLY valid JSON.
+- Base the classification on emotional intensity, urgency, and contextual cues.
+- Provide a concise 1-sentence explanation for the reasoning.
 
 FORMAT:
 {
   "mood": "<Happy|Calm|Stress|Anxiety|Sadness|Anger|Burnout|Neutral|Mixed>",
-  "stress_level": "<Low|Medium|High>",
-  "stress_score": <1-10>,
-  "emotional_insight": "<text>",
-  "supportive_response": "<text>",
-  "suggested_actions": ["<a1>", "<a2>", "<a3>"],
-  "early_warning": "<string|null>",
-  "personalization_note": "<text>"
+  "stress_level": "<Low | Medium | High>",
+  "stress_score": <integer 0-100>,
+  "risk_indicator": "<None | Monitor | Elevated>",
+  "recommended_support": "<Self-care | Mindfulness | Social Support | Professional Guidance>",
+  "explanation": "<brief reasoning for stress classification>",
+  "emotional_insight": "<1-2 sentence deeper psychological insight>",
+  "supportive_response": "<warm, empathetic tone>",
+  "suggested_actions": ["<action1>", "<action2>", "<action3>"],
+  "early_warning": "<string or null>",
+  "personalization_note": "<brief note>"
 }`;
 
 // ─── Core Pipeline ────────────────────────────────────────────────────────────

@@ -53,6 +53,8 @@ function App() {
     let finalRecommendations = localResult.recommendations;
     let finalMood = localResult.emotion;
     let textScore = localResult.stress;
+    let finalRisk = localResult.risk;
+    let finalSupportMode = localResult.support;
 
     try {
       const response = await fetch('http://localhost:3000/analyze', {
@@ -64,9 +66,11 @@ function App() {
       if (response.ok) {
         const data = await response.json();
         // Override local with Aura's deeper API insight
-        finalSupportText = data.supportive_response + " " + (data.early_warning ? `🚨 Warning: ${data.early_warning}. ` : "") + "\n\nInsight: " + data.emotional_insight;
+        finalSupportText = data.explanation + "\n\n" + data.supportive_response + " " + (data.early_warning ? `🚨 Warning: ${data.early_warning}. ` : "") + "\n\nInsight: " + data.emotional_insight;
         finalMood = data.mood || localResult.emotion;
-        textScore = data.stress_score ? data.stress_score * 10 : localResult.stress;
+        textScore = typeof data.stress_score === 'number' ? data.stress_score : localResult.stress;
+        finalRisk = data.risk_indicator || localResult.risk;
+        finalSupportMode = data.recommended_support || localResult.support;
         
         // Push backend's suggested actions into the recommendation array
         if (data.suggested_actions && data.suggested_actions.length > 0) {
@@ -86,8 +90,6 @@ function App() {
     const finalStress = clamp((textScore * 0.7) + (webcam.faceScore * 0.3), 0, 100);
     let finalSentimentScore = localResult.sentiment;
     let finalSentimentLabel = localResult.sentiment >= 60 ? 'Positive' : localResult.sentiment >= 35 ? 'Mixed' : 'Negative';
-    let finalRisk = localResult.risk;
-    let finalSupportMode = localResult.support;
 
     if (positiveFaceDetected && localResult.sentiment >= 50 && finalStress <= 25) {
       finalMood = 'Happy';

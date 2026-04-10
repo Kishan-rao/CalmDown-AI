@@ -110,40 +110,25 @@ Three recommendation tiers based on emotional state:
 
 ## 🏗️ Project Structure
 
-```
+```text
 emotional-intelligence-pipeline/
 │
-├── 📁 src/                          # Backend (Express + Groq)
-│   ├── 📁 ai/
-│   │   ├── pipeline.ts              # 8-step Groq reasoning pipeline
-│   │   └── index.ts                 # Express server + /analyze route
-│   └── types.ts                     # Zod schemas + TypeScript types
+├── 📁 Backend/              # Node.js + Groq Backend
+│   ├── 📁 src/              # AI Pipeline & API logic
+│   ├── 📁 tests/            # Vitest suites
+│   ├── package.json         # Backend scripts
+│   ├── tsconfig.json        # TS Config
+│   └── .env                 # GROQ_API_KEY
 │
-├── 📁 client/                       # Frontend (React + Vite)
-│   └── 📁 src/
-│       ├── App.tsx                  # Root — analysis handler & multimodal fusion
-│       ├── index.css                # Design system, tokens, all component styles
-│       │
-│       ├── 📁 components/
-│       │   ├── HeroSection.tsx      # Top nav + live snapshot card
-│       │   ├── EmotionCheckIn.tsx   # Text input + chip prompts
-│       │   ├── WebcamPanel.tsx      # Webcam feed + expression capture
-│       │   ├── AnalysisDashboard.tsx# Stat cards + emotion history chart
-│       │   ├── RecommendationGrid.tsx # 4-card recommendation layout
-│       │   ├── SupportResponse.tsx  # AI supportive message + disclaimer
-│       │   ├── BreathingPanel.tsx   # Fullscreen animated breathing overlay
-│       │   ├── Panel.tsx            # Shared panel wrapper
-│       │   └── PageShell.tsx        # Outer page layout shell
-│       │
-│       ├── 📁 hooks/
-│       │   ├── useMoodHistory.ts    # Emotion history state + localStorage
-│       │   └── useWebcam.ts         # Webcam control + Face-API expression
-│       │
-│       └── 📁 utils/
-│           └── analyzeText.ts       # Local keyword heuristic + recommendation lib
+├── 📁 Frontend/             # React + Vite Frontend
+│   ├── 📁 src/              # UI Components & Hooks
+│   ├── 📁 public/           # Static assets
+│   ├── index.html           # HTML Entry
+│   ├── package.json         # Frontend scripts
+│   └── vite.config.ts       # Vite Config
 │
-├── package.json                     # Backend scripts + deps
-└── .env                             # GROQ_API_KEY lives here
+├── README.md                # Project Blueprint
+└── .gitignore               # Global ignore rules
 ```
 
 ---
@@ -161,10 +146,10 @@ git clone https://github.com/Kishan-rao/CalmDown-AI.git
 cd CalmDown-AI
 
 # Install backend dependencies
-npm install
+cd Backend && npm install && cd ..
 
 # Install frontend dependencies
-cd client && npm install && cd ..
+cd Frontend && npm install && cd ..
 ```
 
 ### 2 — Environment Setup
@@ -178,6 +163,7 @@ GROQ_API_KEY=your_groq_api_key_here
 ### 3 — Run the Backend
 
 ```bash
+cd Backend
 npm run dev
 ```
 > The Express API starts at `http://localhost:3000`
@@ -185,7 +171,7 @@ npm run dev
 ### 4 — Run the Frontend
 
 ```bash
-cd client
+cd Frontend
 npm run dev
 ```
 > The React app starts at `http://localhost:5173`
