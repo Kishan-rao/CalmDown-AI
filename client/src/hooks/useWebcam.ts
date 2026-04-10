@@ -15,6 +15,7 @@ export function useWebcam() {
   const [cameraMessage, setCameraMessage] = useState("Turn on the camera so the frontend can estimate facial emotion cues.");
   const [expressionOutput, setExpressionOutput] = useState("Waiting for capture");
   const [expressionHint, setExpressionHint] = useState("Uses on-device browser access for webcam preview and can be connected to a face emotion model such as face-api.js.");
+  const [expressionConfidences, setExpressionConfidences] = useState<{label: string, value: number}[]>([]);
   const [faceScore, setFaceScore] = useState(30); // Default to a neutral score
   const [faceApiReady, setFaceApiReady] = useState(false);
 
@@ -90,6 +91,13 @@ export function useWebcam() {
           const [label, confidence] = sorted[0];
           const prettyLabel = `${titleCase(label)} (${Math.round(confidence * 100)}%)`;
           setExpressionOutput(prettyLabel);
+
+          // Map all expressions for the confidence map
+          const allConf = Object.entries(detection.expressions).map(([exp, val]) => ({
+            label: titleCase(exp),
+            value: val * 100
+          })).sort((a, b) => b.value - a.value);
+          setExpressionConfidences(allConf);
           
           const mappedScore = expressionScoreMap[label] || 30;
           setFaceScore(mappedScore);
@@ -110,6 +118,13 @@ export function useWebcam() {
     // Fallback pseudo score extraction
     const fallbackScore = picked === "Slightly tense" ? 50 : picked === "Low energy" ? 60 : 30;
     setFaceScore(fallbackScore);
+
+    // Mock confidence list for demo
+    setExpressionConfidences([
+      { label: titleCase(picked), value: 72 },
+      { label: "Neutral", value: 20 },
+      { label: "Calm", value: 8 }
+    ]);
     
     return fallbackScore;
   };
@@ -120,6 +135,7 @@ export function useWebcam() {
     cameraMessage,
     expressionOutput,
     expressionHint,
+    expressionConfidences,
     faceScore,
     startCamera,
     stopCamera,

@@ -15,22 +15,6 @@ interface AnalysisDashboardProps {
   moodHistory: MoodEntry[];
 }
 
-const POSITIVE_EMOTIONS = new Set(['happy', 'joy', 'calm', 'stable', 'reflective']);
-const NEGATIVE_EMOTIONS = new Set(['stress', 'anxiety', 'sadness', 'anger', 'burnout', 'strained', 'high distress']);
-
-function getEmotionCategory(emotion: string = 'Neutral'): 'positive' | 'neutral' | 'negative' {
-  const key = emotion.toLowerCase();
-  if (POSITIVE_EMOTIONS.has(key)) return 'positive';
-  if (NEGATIVE_EMOTIONS.has(key)) return 'negative';
-  return 'neutral';
-}
-
-const CATEGORY_COLORS = {
-  positive: '#327c74',
-  neutral:  '#a08060',
-  negative: '#a84444',
-};
-
 const GRAPH_W = 600;
 const GRAPH_H = 160;
 const PAD_LEFT = 40;
@@ -178,19 +162,17 @@ export function AnalysisDashboard({
             {/* Data points + day labels */}
             {points.map(([x, y], i) => {
               const entry = moodHistory[i];
-              const cat = getEmotionCategory(entry.emotion);
-              const color = CATEGORY_COLORS[cat];
               const score = entry.sentiment ?? entry.value;
               return (
                 <g key={i} className="graph-point-group">
                   {/* Outer glow ring */}
-                  <circle cx={x} cy={y} r={9} fill={color} opacity={0.15} />
+                  <circle cx={x} cy={y} r={9} fill="#327c74" opacity={0.15} />
                   {/* Main dot */}
                   <circle
                     cx={x}
                     cy={y}
                     r={5}
-                    fill={color}
+                    fill="#327c74"
                     stroke="#fff"
                     strokeWidth={2}
                     className="graph-dot"
@@ -206,21 +188,13 @@ export function AnalysisDashboard({
                   >
                     {entry.day}
                   </text>
-                  {/* Emotion tag */}
-                  <text
-                    x={x}
-                    y={y - 12}
-                    textAnchor="middle"
-                    className={`graph-emotion-tag graph-tag-${cat}`}
-                  >
-                    {(entry.emotion ?? 'Neutral').toUpperCase()}
-                  </text>
                 </g>
               );
             })}
           </svg>
         </div>
       </div>
+
     </Panel>
   );
 }

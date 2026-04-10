@@ -1,13 +1,21 @@
 import { Panel } from './Panel';
+import { EmotionSpectrum } from './EmotionSpectrum';
+
+interface EmotionEntry {
+  label: string;
+  intensity: number;
+  meta: string;
+}
 
 interface EmotionCheckInProps {
   value: string;
   onChange: (val: string) => void;
   onAnalyze: () => void;
   onOpenWebcam?: () => void;
+  spectrumEntries?: EmotionEntry[];
 }
 
-export function EmotionCheckIn({ value, onChange, onAnalyze, onOpenWebcam }: EmotionCheckInProps) {
+export function EmotionCheckIn({ value, onChange, onAnalyze, onOpenWebcam, spectrumEntries = [] }: EmotionCheckInProps) {
   const chips = [
     { label: 'Stressed', text: 'I feel drained, anxious, and mentally overloaded today.' },
     { label: 'Low Mood', text: 'I feel disconnected, tired, and low on motivation.' },
@@ -58,6 +66,15 @@ export function EmotionCheckIn({ value, onChange, onAnalyze, onOpenWebcam }: Emo
         <button className="primary-button" type="button" onClick={onAnalyze}>
           Analyze Well-Being
         </button>
+      </div>
+
+      <div className="emotion-spectrum-container" style={{ marginTop: '24px' }}>
+        <EmotionSpectrum entries={spectrumEntries} />
+        {spectrumEntries.length === 0 && (
+          <p className="small-note" style={{ marginTop: '12px', textAlign: 'center' }}>
+            Enter your thoughts and click analyze to see the full emotion spectrum intensity.
+          </p>
+        )}
       </div>
     </Panel>
   );

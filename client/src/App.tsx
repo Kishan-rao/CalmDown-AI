@@ -35,6 +35,7 @@ function App() {
   const [supportMode, setSupportMode] = useState('Gentle check-in');
   const [supportText, setSupportText] = useState('Share a check-in above to receive a supportive response, risk summary, and calming next steps.');
   const [recommendations, setRecommendations] = useState(recommendationLibrary.low);
+  const [spectrumEntries, setSpectrumEntries] = useState<{label: string, intensity: number, meta: string}[]>([]);
 
   const handleAnalyze = async () => {
     // Fallback/base local heuristic
@@ -118,6 +119,13 @@ function App() {
     setSupportText(finalSupportText);
     setRecommendations(finalRecommendations);
 
+    // Build the Emotion Spectrum intensity bars
+    setSpectrumEntries([
+      { label: "Sentiment Depth", intensity: finalSentimentScore, meta: "Intensity of positive/negative tone keywords." },
+      { label: "Distress Index", intensity: finalStress, meta: "Combined physiological and semantic tension." },
+      { label: "Mental Clarity", intensity: Math.max(0, 100 - finalStress + 10), meta: "Estimated baseline stability and focus." }
+    ]);
+
     addMoodEntry(finalStress, finalMood, finalSentimentScore);
   };
 
@@ -144,6 +152,7 @@ function App() {
           onChange={setInputText}
           onAnalyze={handleAnalyze}
           onOpenWebcam={webcam.startCamera}
+          spectrumEntries={spectrumEntries}
         />
 
         <WebcamPanel
@@ -158,6 +167,8 @@ function App() {
             if (inputText) handleAnalyze();
           }}
           videoRef={webcam.videoRef}
+          confidenceEntries={webcam.expressionConfidences}
+          dominantExpression={moodLabel}
         />
 
         <AnalysisDashboard

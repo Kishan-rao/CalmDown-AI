@@ -23,7 +23,11 @@ export function HeroSection({
     <header className="hero">
       <nav className="topbar">
         <div className="brand-lockup">
-          <img src="/new-logo.svg" alt="CalmDown AI logo" className="brand-logo" />
+          <img src="/new-logo.svg" alt="SafeSpace AI logo" className="brand-logo" />
+          <div>
+            <p className="eyebrow">AI-powered emotion detection</p>
+            <h1>SafeSpace AI</h1>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
           <button className="ghost-button" type="button" onClick={onDemoFill}>
@@ -38,7 +42,7 @@ export function HeroSection({
       <section className="hero-grid">
         <div className="hero-copy">
           <p className="section-label">Detect. Understand. Support.</p>
-          <h2>Calms your emotions</h2>
+          <h2>Feel. Track. Heal</h2>
           <p className="hero-text">
             This interface combines written emotion check-ins, webcam-based expression sensing,
             mood tracking, and personalized recommendations for breathing, books, music, and
