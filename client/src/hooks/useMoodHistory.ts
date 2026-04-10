@@ -49,10 +49,23 @@ export function useMoodHistory() {
 
   const addMoodEntry = (value: number, emotion = "Neutral", sentiment = 50) => {
     setMoodHistory(prev => {
-      const newHistory = [...prev, { day: getTodayLabel(), value, emotion, sentiment }];
-      if (newHistory.length > 7) {
-        newHistory.shift();
+      const today = getTodayLabel();
+      const existingIndex = prev.findIndex(e => e.day === today);
+      let newHistory: MoodEntry[];
+
+      if (existingIndex !== -1) {
+        // Update existing entry for today
+        newHistory = prev.map((e, i) =>
+          i === existingIndex ? { day: today, value, emotion, sentiment } : e
+        );
+      } else {
+        // Append new entry and keep last 7
+        newHistory = [...prev, { day: today, value, emotion, sentiment }];
+        if (newHistory.length > 7) {
+          newHistory.shift();
+        }
       }
+
       try {
         localStorage.setItem(historyStorageKey, JSON.stringify(newHistory));
       } catch (e) {

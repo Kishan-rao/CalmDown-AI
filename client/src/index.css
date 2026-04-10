@@ -456,75 +456,75 @@ textarea:focus {
   min-height: 230px;
 }
 
-.mood-bar {
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  gap: 6px;
-  min-height: 210px;
+/* ── Line Graph ──────────────────────────────────────────── */
+
+.line-graph-wrapper {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--line);
+  padding: 8px 0 4px;
 }
 
-/* Base bar fill */
-.mood-bar-fill {
-  border-radius: 18px 18px 10px 10px;
-  min-height: 32px;
-  transition: height 0.6s ease;
+.line-graph-svg {
+  display: block;
+  width: 100%;
+  height: 180px;
 }
 
-/* Color variants */
-.mood-bar-positive {
-  background: linear-gradient(180deg, rgba(50, 124, 116, 0.5), rgba(112, 133, 95, 0.85));
-  box-shadow: 0 4px 16px rgba(50, 124, 116, 0.18);
+.graph-grid-line {
+  stroke: rgba(61, 44, 24, 0.07);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
 }
 
-.mood-bar-neutral {
-  background: linear-gradient(180deg, rgba(179, 163, 142, 0.45), rgba(202, 109, 63, 0.55));
-  box-shadow: 0 4px 16px rgba(202, 109, 63, 0.12);
+.graph-y-label {
+  font-family: "Manrope", sans-serif;
+  font-size: 9px;
+  fill: var(--muted);
+  text-anchor: end;
 }
 
-.mood-bar-negative {
-  background: linear-gradient(180deg, rgba(168, 68, 68, 0.55), rgba(168, 68, 68, 0.85));
-  box-shadow: 0 4px 16px rgba(168, 68, 68, 0.2);
+.graph-x-label {
+  font-family: "Manrope", sans-serif;
+  font-size: 10px;
+  fill: var(--muted);
 }
 
-/* Bar label block under bar */
-.mood-bar-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
+.graph-trend-line {
+  stroke: var(--teal);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.mood-bar-day {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.82rem;
+.graph-dot {
+  transition: r 0.2s ease;
 }
 
-.mood-bar-tag {
-  font-size: 0.65rem;
+.graph-point-group:hover .graph-dot {
+  r: 7;
+}
+
+.graph-emotion-tag {
+  font-family: "Manrope", sans-serif;
+  font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 2px 7px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  white-space: nowrap;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-.mood-tag-positive {
-  background: rgba(50, 124, 116, 0.14);
-  color: var(--teal);
+.graph-point-group:hover .graph-emotion-tag {
+  opacity: 1;
 }
 
-.mood-tag-neutral {
-  background: rgba(111, 98, 86, 0.12);
-  color: var(--muted);
-}
+.graph-tag-positive { fill: #327c74; }
+.graph-tag-neutral  { fill: #6f6256; }
+.graph-tag-negative { fill: #a84444; }
 
-.mood-tag-negative {
-  background: rgba(168, 68, 68, 0.12);
-  color: var(--danger);
-}
+/* ── Legend ─────────────────────────────────────────────── */
 
 /* Legend */
 .mood-legend {
@@ -559,6 +559,7 @@ textarea:focus {
   color: var(--danger);
   border: 1px solid rgba(168, 68, 68, 0.18);
 }
+
 
 .recommendation-grid {
   display: grid;
