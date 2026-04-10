@@ -24,10 +24,6 @@ export function HeroSection({
       <nav className="topbar">
         <div className="brand-lockup">
           <img src="/new-logo.svg" alt="CalmDown AI logo" className="brand-logo" />
-          <div>
-            <p className="eyebrow">AI-powered emotional support</p>
-            <h1>CalmDown AI</h1>
-          </div>
         </div>
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
           <button className="ghost-button" type="button" onClick={onDemoFill}>
