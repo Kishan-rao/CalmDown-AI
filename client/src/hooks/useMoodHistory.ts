@@ -5,16 +5,18 @@ const historyStorageKey = "calmdown-ai-mood-history";
 export interface MoodEntry {
   day: string;
   value: number;
+  emotion?: string;
+  sentiment?: number;
 }
 
 const defaultMoodHistory: MoodEntry[] = [
-  { day: "Mon", value: 44 },
-  { day: "Tue", value: 58 },
-  { day: "Wed", value: 52 },
-  { day: "Thu", value: 48 },
-  { day: "Fri", value: 60 },
-  { day: "Sat", value: 42 },
-  { day: "Sun", value: 36 },
+  { day: "Mon", value: 44, emotion: "Neutral", sentiment: 52 },
+  { day: "Tue", value: 28, emotion: "Happy", sentiment: 78 },
+  { day: "Wed", value: 52, emotion: "Strained", sentiment: 40 },
+  { day: "Thu", value: 68, emotion: "Stress", sentiment: 28 },
+  { day: "Fri", value: 30, emotion: "Calm", sentiment: 72 },
+  { day: "Sat", value: 42, emotion: "Mixed", sentiment: 50 },
+  { day: "Sun", value: 20, emotion: "Happy", sentiment: 85 },
 ];
 
 function getTodayLabel() {
@@ -30,7 +32,14 @@ export function useMoodHistory() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setMoodHistory(parsed.slice(-7));
+          // Backwards-compat: fill missing fields with defaults
+          const normalized = parsed.map((e: MoodEntry) => ({
+            day: e.day ?? "?",
+            value: e.value ?? 50,
+            emotion: e.emotion ?? "Neutral",
+            sentiment: e.sentiment ?? 50,
+          }));
+          setMoodHistory(normalized.slice(-7));
         }
       }
     } catch (e) {
@@ -38,9 +47,9 @@ export function useMoodHistory() {
     }
   }, []);
 
-  const addMoodEntry = (value: number) => {
+  const addMoodEntry = (value: number, emotion = "Neutral", sentiment = 50) => {
     setMoodHistory(prev => {
-      const newHistory = [...prev, { day: getTodayLabel(), value }];
+      const newHistory = [...prev, { day: getTodayLabel(), value, emotion, sentiment }];
       if (newHistory.length > 7) {
         newHistory.shift();
       }

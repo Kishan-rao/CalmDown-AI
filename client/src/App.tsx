@@ -118,7 +118,7 @@ function App() {
     setSupportText(finalSupportText);
     setRecommendations(finalRecommendations);
 
-    addMoodEntry(finalStress);
+    addMoodEntry(finalStress, finalMood, finalSentimentScore);
   };
 
   const handleDemoFill = () => {
