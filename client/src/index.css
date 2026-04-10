@@ -604,6 +604,9 @@ textarea:focus {
   background: radial-gradient(circle, rgba(50, 124, 116, 0.4), rgba(202, 109, 63, 0.5));
   transition: transform 4s ease-in-out, background 4s ease-in-out;
   box-shadow: 0 0 40px rgba(202, 109, 63, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .breathing-circle.inhale {
@@ -619,5 +622,7 @@ textarea:focus {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--primary-deep);
-  margin-top: 10px;
+  margin: 0;
+  max-width: none;
+  text-align: center;
 }

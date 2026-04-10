@@ -30,8 +30,9 @@ export function BreathingPanel({ onClose }: BreathingPanelProps) {
         </button>
         
         <div className="breathing-container">
-          <div className={`breathing-circle ${inhale ? 'inhale' : 'exhale'}`}></div>
-          <h2 className="breathing-text">{inhale ? 'Breathe In' : 'Breathe Out'}</h2>
+          <div className={`breathing-circle ${inhale ? 'inhale' : 'exhale'}`}>
+            <h2 className="breathing-text">{inhale ? 'Breathe In' : 'Breathe Out'}</h2>
+          </div>
         </div>
       </div>
     </div>

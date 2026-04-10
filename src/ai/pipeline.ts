@@ -85,7 +85,7 @@ Your role is to analyze user input, detect emotional distress, assess stress lev
 Follow this strict structured reasoning pipeline:
 
 STEP 1: Emotion Detection
-- Choose from: Stress, Anxiety, Sadness, Anger, Burnout, Neutral, Mixed
+- Choose from: Joy, Calm, Stress, Anxiety, Sadness, Anger, Burnout, Neutral, Mixed
 
 STEP 2: Stress & Intensity Scoring
 - stress_level: Low / Medium / High
@@ -117,7 +117,7 @@ CRITICAL:
 
 FORMAT:
 {
-  "mood": "<Stress|Anxiety|Sadness|Anger|Burnout|Neutral|Mixed>",
+  "mood": "<Joy|Calm|Stress|Anxiety|Sadness|Anger|Burnout|Neutral|Mixed>",
   "stress_level": "<Low|Medium|High>",
   "stress_score": <1-10>,
   "emotional_insight": "<text>",

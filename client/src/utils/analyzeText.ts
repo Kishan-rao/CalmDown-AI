@@ -57,7 +57,7 @@ export function analyzeText(text: string) {
   distressLexicon.positive.forEach((term) => { if (normalized.includes(term)) positiveHits += 1; });
 
   sentiment = clamp(50 - highHits * 16 - mediumHits * 8 + positiveHits * 10, 0, 100);
-  stress = clamp(25 + highHits * 18 + mediumHits * 9 - positiveHits * 6 + normalized.length / 18, 0, 100);
+  stress = clamp(25 + highHits * 18 + mediumHits * 9 - positiveHits * 6 + Math.min(normalized.length / 50, 15), 0, 100);
 
   let emotion = "Reflective";
   let risk = "Low";
