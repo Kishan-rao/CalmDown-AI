@@ -10,6 +10,7 @@ import { RecommendationGrid } from './components/RecommendationGrid';
 import { SupportResponse } from './components/SupportResponse';
 import { BreathingPanel } from './components/BreathingPanel';
 import { EmotionIntensitySection } from './components/EmotionIntensitySection';
+import { MoodSelector } from './components/MoodSelector';
 import type { EmotionMetric } from './components/EmotionBar';
 
 import { useWebcam } from './hooks/useWebcam';
@@ -40,9 +41,12 @@ function App() {
   const [emotionMetrics, setEmotionMetrics] = useState<EmotionMetric[]>([]);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (manualText?: string) => {
+    const textToAnalyze = manualText || inputText;
+    if (!textToAnalyze) return;
+
     // Fallback/base local heuristic
-    const localResult = analyzeText(inputText);
+    const localResult = analyzeText(textToAnalyze);
     const expression = webcam.expressionOutput.toLowerCase();
     const positiveFaceDetected = expression.includes('happy') || expression.includes('calm');
     const negativeFaceDetected =
@@ -63,7 +67,7 @@ function App() {
       const response = await fetch('http://localhost:3000/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: inputText }),
+        body: JSON.stringify({ message: textToAnalyze }),
       });
 
       if (response.ok) {
@@ -139,6 +143,11 @@ function App() {
     addMoodEntry(finalStress, finalMood, finalSentimentScore);
   };
 
+  const handleMoodSelection = (moodText: string) => {
+    setInputText(moodText);
+    handleAnalyze(moodText);
+  };
+
   const handleDemoFill = () => {
     setInputText("I have been feeling overwhelmed with classes and deadlines. I am tired, anxious, and finding it hard to switch off my thoughts at night.");
     handleAnalyze();
@@ -161,9 +170,11 @@ function App() {
           <EmotionCheckIn
             value={inputText}
             onChange={setInputText}
-            onAnalyze={handleAnalyze}
+            onAnalyze={() => handleAnalyze()}
             onOpenWebcam={webcam.startCamera}
           />
+
+          <MoodSelector onSelect={handleMoodSelection} />
 
           <EmotionIntensitySection 
             isAnalyzed={isAnalyzed}
