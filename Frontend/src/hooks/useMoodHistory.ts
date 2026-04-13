@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const historyStorageKey = "calmdown-ai-mood-history";
 
@@ -24,28 +24,25 @@ function getTodayLabel() {
 }
 
 export function useMoodHistory() {
-  const [moodHistory, setMoodHistory] = useState<MoodEntry[]>(defaultMoodHistory);
-
-  useEffect(() => {
+  const [moodHistory, setMoodHistory] = useState<MoodEntry[]>(() => {
     try {
       const saved = localStorage.getItem(historyStorageKey);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Backwards-compat: fill missing fields with defaults
-          const normalized = parsed.map((e: MoodEntry) => ({
+          return parsed.map((e: MoodEntry) => ({
             day: e.day ?? "?",
             value: e.value ?? 50,
             emotion: e.emotion ?? "Neutral",
             sentiment: e.sentiment ?? 50,
-          }));
-          setMoodHistory(normalized.slice(-7));
+          })).slice(-7);
         }
       }
     } catch (e) {
       console.error('Failed to load mood history', e);
     }
-  }, []);
+    return defaultMoodHistory;
+  });
 
   const addMoodEntry = (value: number, emotion = "Neutral", sentiment = 50) => {
     setMoodHistory(prev => {
